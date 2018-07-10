@@ -3,11 +3,12 @@ import { createStackNavigator } from 'react-navigation';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { Hello } from './components/Hello';
-import { MapStarterScreen } from './components/MapStarterScreen';
+import { MapScreen } from './components/MapScreen';
 
 
 const App = createStackNavigator({
-  MapStarterScreen: { screen: MapStarterScreen },
+  MapScreen: { screen: MapScreen },
+  SearchScreen: { screen: SearchScreen }
 });
 
 
@@ -22,7 +23,6 @@ export default class KyytiProject extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
   },

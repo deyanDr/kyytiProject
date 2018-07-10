@@ -4,11 +4,12 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import { Hello } from './components/Hello';
 import { MapScreen } from './components/MapScreen';
+import { SearchScreen } from './components/SearchScreen';
 
 
 const App = createStackNavigator({
+  SearchScreen: { screen: SearchScreen },
   MapScreen: { screen: MapScreen },
-  SearchScreen: { screen: SearchScreen }
 });
 
 

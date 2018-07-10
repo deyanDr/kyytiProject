@@ -16,11 +16,10 @@ export class Hello extends React.Component<Props, State> {
     super(props);
 
     if ((props.enthusiasmLevel || 0) <= 0) {
-      throw new Error('You could be a little more enthusiastic. :D');
     }
 
     this.state = {
-      enthusiasmLevel: props.enthusiasmLevel || 1,
+      enthusiasmLevel:  1,
     };
   }
 
@@ -82,7 +81,7 @@ export class Hello extends React.Component<Props, State> {
       <View style={styles.root}>
         <Text style={styles.greeting}>
           Hello{' '}
-          {this.props.name +
+          {'Gosho' +
             this.getExclamationMarks(this.state.enthusiasmLevel)}
         </Text>
 

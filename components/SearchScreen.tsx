@@ -5,12 +5,13 @@ import { Button, StyleSheet, Text, View, ActivityIndicator, FlatList, TouchableO
 import { SEARCH_ROUTE, HEADERS, URLS } from '../constants';
 
 export interface Props {
-    navigation: NavigationScreenProp<any,any>
+    navigation: NavigationScreenProp<any, any>
 }
 
 interface State {
     loading: boolean;
-    travelOptions: Object
+    travelTypes2DArray: Array<Array<string>>;
+    travelOptions: Array<Object>;
 }
 
 export class SearchScreen extends React.Component<Props, State> {
@@ -23,12 +24,9 @@ export class SearchScreen extends React.Component<Props, State> {
         super(props);
         this.state = {
             loading: false,
-            travelOptions: [],
+            travelTypes2DArray: Array<Array<string>>(),
+            travelOptions: Array<Object>(),
         }
-    }
-
-    componentDidMount() {
-        console.log(this.props.navigation.actions.navigate)
     }
 
     getRoutes() {
@@ -41,79 +39,50 @@ export class SearchScreen extends React.Component<Props, State> {
             body: JSON.stringify(SEARCH_ROUTE),
         }).then((response) => response.json())
             .then((responseJson => {
-
-                let travelOptions = [];
-
+                let travelTypes2DArray = Array<Array<string>>();
                 let publicTransportOptionsArray = responseJson.routes.publicTransport;
 
-                publicTransportOptionsArray.forEach((publicTransportOption) => {
-                    let legs = publicTransportOption.legs;
-                    let coordinates2DArray = Array<Array<LatLng>>();
-                    let colorsObjectArray = Array<string>();
-                    let travelTypeArray = Array<string>();
-                    let coordinates = Array<LatLng>();
-
-                    legs.forEach(leg => {
-                        // 1. Travel type and colors
-                        travelTypeArray.push(leg.iconRef);
-                        colorsObjectArray.push(leg.color);
-                        // 2. Coordinates
-                        leg.shape.forEach(coord => {
-                            let coordinate = {
-                                latitude: coord[0],
-                                longitude: coord[1]
-                            }
-                            coordinates.push(coordinate);
-                        });
-
-                        // 3. Coordinated 2D
-                        coordinates2DArray.push(coordinates);
-
-                        // 4. Create object
-                        let travelObject = {
-                            'travelTypeArray': travelTypeArray,
-                            'colorsObjectArray': colorsObjectArray,
-                            'coordinates2DArray': coordinates2DArray
-                        }
-                        // 5. Update trave; options array
-                        travelOptions.push(travelObject);
-
-                    })
-
-                    this.setState({
-                        travelOptions,
-                        loading: false
-                    })
+                this.setState({
+                    travelOptions: publicTransportOptionsArray,
                 })
 
-                console.log(travelOptions[0].coordinates2DArray.length);
+                publicTransportOptionsArray.forEach((publicTransportOption: any) => {
+                    let travelTypesArray = Array<string>();
+
+                    publicTransportOption.legs.forEach((leg: any) => {
+                        // 1. Travel type update
+                        travelTypesArray.push(leg.iconRef);
+                    })
+
+                    travelTypes2DArray.push(travelTypesArray);
+                })
+                this.setState({
+                    travelTypes2DArray,
+                    loading: false
+                })
             }))
             .catch((error) => {
                 console.log(error);
             });
     }
 
-    onPressRenderRow(item, navigate) {
+    onPressRenderRow(travelOption: Object, navigate: Function) {
         navigate('MapScreen', {
-            coordinates2DArray: item.coordinates2DArray,
-            colorsObjectArray: item.colorsObjectArray,
-            travelTypeArray: item.travelTypeArray,
+            travelOption
         })
-
     }
 
-    renderRow(item) {
+    renderRow(travelTypesArray: Array<string>, travelOption: Object) {
         return (
             <View>
-                <TouchableOpacity style={styles.button} onPress={() => this.onPressRenderRow(item, this.props.navigation.navigate)}>
-                    <Text style={styles.itemRow}> {item.travelTypeArray.join(" => ")}</Text>
+                <TouchableOpacity style={styles.button} onPress={() => this.onPressRenderRow(travelOption, this.props.navigation.navigate)}>
+                    <Text style={styles.itemRow}> {travelTypesArray.join(" => ")}</Text>
                 </TouchableOpacity>
             </View>
         )
     }
 
     render() {
-
         return (
             <View style={styles.root}>
                 <Text style={styles.headline}> List routes from user’s mocked location
@@ -130,10 +99,9 @@ export class SearchScreen extends React.Component<Props, State> {
 
                 <FlatList
                     style={styles.screenWidth}
-                    data={this.state.travelOptions}
-                    renderItem={({ item }) => this.renderRow(item)}
+                    data={this.state.travelTypes2DArray}
+                    renderItem={({ item, index }) => this.renderRow(item, this.state.travelOptions[index])}
                     keyExtractor={(item, index) => `${index}`}
-
                 />
             </View>
         );

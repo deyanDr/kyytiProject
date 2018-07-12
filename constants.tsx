@@ -7,31 +7,38 @@ export const testEndLocation = {
     longitude: 24.9440555
 }
 
+export const testInitialRegion = {
+    latitude: 60.189862,
+    longitude: 24.921628,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421
+}
+
 export const SEARCH_ROUTE = {
-    "start":{
-        "location":{
+    "start": {
+        "location": {
             "lat": testStartLocation.latitude,
             "lon": testStartLocation.longitude
         }
     },
-    "end":{
-        "name":"Kyyti Office - Test",
-        "address":"Fredrikinkatu 47",
-        "city":"Helsinki",
-        "country":"Suomi",
-        "type":"poi",
-        "location":{
+    "end": {
+        "name": "Kyyti Office - Test",
+        "address": "Fredrikinkatu 47",
+        "city": "Helsinki",
+        "country": "Suomi",
+        "type": "poi",
+        "location": {
             "lat": testEndLocation.latitude,
             "lon": testEndLocation.longitude
         }
     },
-    "timeType":"departure",
-    "routeModes":"publicTransport:bus,tram",
-    "passengers":{
-        "count":1
+    "timeType": "departure",
+    "routeModes": "publicTransport:bus,tram",
+    "passengers": {
+        "count": 1
     },
-    "extraInfo":{
-        "extraLuggageCount":0
+    "extraInfo": {
+        "extraLuggageCount": 0
     }
 }
 

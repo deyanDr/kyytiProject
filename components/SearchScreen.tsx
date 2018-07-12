@@ -1,7 +1,10 @@
 // components/Hello.tsx
 import React from 'react';
 import { NavigationScreenProp } from 'react-navigation';
-import { Button, StyleSheet, Text, View, ActivityIndicator, FlatList, TouchableOpacity, Dimensions } from 'react-native';
+import { Button, StyleSheet, Text, View, ActivityIndicator, FlatList, TouchableOpacity, Dimensions, Alert } from 'react-native';
+import { SearchBar } from 'react-native-elements'
+
+import { testStartLocation, testInitialRegion } from '../constants';
 import { SEARCH_ROUTE, HEADERS, URLS } from '../constants';
 
 export interface Props {
@@ -27,6 +30,17 @@ export class SearchScreen extends React.Component<Props, State> {
             travelTypes2DArray: Array<Array<string>>(),
             travelOptions: Array<Object>(),
         }
+    }
+
+    componentDidMount() {
+        Alert.alert(
+            'Info',
+            'List routes from user’s mocked location (60.189862, 24.921628) to Kyyti office at Fredrikinkatu 47, Helsinki.',
+            [
+                { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ],
+            { cancelable: false }
+        )
     }
 
     getRoutes() {
@@ -73,10 +87,11 @@ export class SearchScreen extends React.Component<Props, State> {
     }
 
     renderRow(travelTypesArray: Array<string>, travelOption: Object) {
+        console.log(travelOption);
         return (
             <View>
                 <TouchableOpacity style={styles.button} onPress={() => this.onPressRenderRow(travelOption, this.props.navigation.navigate)}>
-                    <Text style={styles.itemRow}> {travelTypesArray.join(" => ")}</Text>
+                    <Text style={styles.itemRow}> {travelTypesArray.join(" => ")} for {travelOption.totalPrice.formattedPrice}</Text>
                 </TouchableOpacity>
             </View>
         )
@@ -84,21 +99,22 @@ export class SearchScreen extends React.Component<Props, State> {
 
     render() {
         return (
-            <View style={styles.root}>
-                <Text style={styles.headline}> List routes from user’s mocked location
-                    (60.189862, 24.921628)
-                     to Kyyti office at Fredrikinkatu 47,
-                     Helsinki. </Text>
-                <Button onPress={() => this.getRoutes()}
+            <View style={[styles.container]}>
+                <SearchBar containerStyle={[styles.searchBar, styles.screenWidth]}
+                    value="Fredrinkatu 47, Helsinki"
+                    onSubmitEditing={() => this.getRoutes()}
+                    //   onChangeText= {}
+                    placeholder='Search places' />
+                {/* <Button onPress={() => this.getRoutes()}
                     title="Search Routes"
                     color="#841584"
                     accessibilityLabel="Get Routes Button"
-                />
+                /> */}
 
-                {this.state.loading && <ActivityIndicator size="large" color="red" />}
+                {this.state.loading && <ActivityIndicator style={{alignSelf: 'center', margin: 20}} size="large" color="black" />}
 
                 <FlatList
-                    style={styles.screenWidth}
+                    style={[styles.screenWidth, styles.screenHeight]}
                     data={this.state.travelTypes2DArray}
                     renderItem={({ item, index }) => this.renderRow(item, this.state.travelOptions[index])}
                     keyExtractor={(item, index) => `${index}`}
@@ -110,9 +126,20 @@ export class SearchScreen extends React.Component<Props, State> {
 
 // styles
 const styles = StyleSheet.create({
-    root: {
-        alignItems: 'center',
-        alignSelf: 'center',
+    container: {
+        flex: 1,
+        justifyContent: 'center'
+    },
+    horizontal: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        padding: 10
+    },
+    searchBar: {
+
+    },
+    flatList: {
+        flex: 0.8,
     },
     headline: {
         textAlign: 'center',

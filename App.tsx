@@ -2,12 +2,13 @@ import React from 'react';
 import { createStackNavigator } from 'react-navigation';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { Hello } from './components/Hello';
 import { MapScreen } from './components/MapScreen';
 import { SearchScreen } from './components/SearchScreen';
+import { HelloMapScreen } from './components/HelloMapScreen';
 
 
 const App = createStackNavigator({
+  HelloMapScreen: { screen: HelloMapScreen},
   SearchScreen: { screen: SearchScreen },
   MapScreen: { screen: MapScreen },
 });

@@ -23,7 +23,7 @@ export class HelloMapScreen extends React.Component<Props, State> {
       title: 'Hello Map',
       headerRight: (
         <TouchableOpacity style={{ marginRight: 10 }} onPress={() => navigation.navigate('SearchScreen')} >
-          <Text>Search Routes</Text>
+          <Text style={{color: 'white'}}>Search Routes</Text>
         </TouchableOpacity>
       ),
     }

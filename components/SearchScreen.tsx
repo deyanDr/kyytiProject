@@ -2,7 +2,7 @@
 import React from 'react';
 import { NavigationScreenProp } from 'react-navigation';
 import { Button, StyleSheet, Text, View, ActivityIndicator, FlatList, TouchableOpacity, Dimensions, Alert } from 'react-native';
-import { SearchBar } from 'react-native-elements'
+import { SearchBar, List, ListItem, Icon } from 'react-native-elements'
 
 import { testStartLocation, testInitialRegion } from '../constants';
 import { SEARCH_ROUTE, HEADERS, URLS } from '../constants';
@@ -80,44 +80,44 @@ export class SearchScreen extends React.Component<Props, State> {
             });
     }
 
-    onPressRenderRow(travelOption: Object, navigate: Function) {
+    onListItemPress(travelOption: Object, navigate: Function) {
         navigate('MapScreen', {
             travelOption
         })
     }
 
-    renderRow(travelTypesArray: Array<string>, travelOption: Object) {
-        console.log(travelOption);
+    renderListItem(travelTypesArray: Array<string>, travelOption: Object) {
         return (
-            <View>
-                <TouchableOpacity style={styles.button} onPress={() => this.onPressRenderRow(travelOption, this.props.navigation.navigate)}>
-                    <Text style={styles.itemRow}> {travelTypesArray.join(" => ")} for {travelOption.totalPrice.formattedPrice}</Text>
-                </TouchableOpacity>
-            </View>
+            <ListItem
+                leftIcon={{ name: "directions" }}
+                title={travelTypesArray.join(" => ")}
+                subtitle={"Leave at " + new Date(travelOption.departureTime.time).toLocaleString()}
+                onPress={() => this.onListItemPress(travelOption, this.props.navigation.navigate)}
+                badge={{ value: `${travelOption.totalPrice.formattedPrice}`, textStyle: { color: 'white' } }}
+            />
         )
     }
+
+    renderHeader = () => {
+        return <SearchBar containerStyle={[styles.searchBar, styles.screenWidth]}
+            value="Fredrinkatu 47, Helsinki"
+            onSubmitEditing={() => this.getRoutes()}
+            lightTheme
+            placeholder='Search places' />;
+    };
 
     render() {
         return (
             <View style={[styles.container]}>
-                <SearchBar containerStyle={[styles.searchBar, styles.screenWidth]}
-                    value="Fredrinkatu 47, Helsinki"
-                    onSubmitEditing={() => this.getRoutes()}
-                    //   onChangeText= {}
-                    placeholder='Search places' />
-                {/* <Button onPress={() => this.getRoutes()}
-                    title="Search Routes"
-                    color="#841584"
-                    accessibilityLabel="Get Routes Button"
-                /> */}
 
-                {this.state.loading && <ActivityIndicator style={{alignSelf: 'center', margin: 20}} size="large" color="black" />}
+                {this.state.loading && <ActivityIndicator style={{ alignSelf: 'center', margin: 20 }} size="large" color="black" />}
 
                 <FlatList
                     style={[styles.screenWidth, styles.screenHeight]}
                     data={this.state.travelTypes2DArray}
-                    renderItem={({ item, index }) => this.renderRow(item, this.state.travelOptions[index])}
+                    renderItem={({ item, index }) => this.renderListItem(item, this.state.travelOptions[index])}
                     keyExtractor={(item, index) => `${index}`}
+                    ListHeaderComponent={this.renderHeader}
                 />
             </View>
         );

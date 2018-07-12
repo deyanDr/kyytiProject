@@ -7,6 +7,8 @@ import { SearchBar, List, ListItem, Icon } from 'react-native-elements'
 import { testStartLocation, testInitialRegion } from '../constants';
 import { SEARCH_ROUTE, HEADERS, URLS } from '../constants';
 
+import { API } from './Helpers/API'
+
 export interface Props {
     navigation: NavigationScreenProp<any, any>
 }
@@ -44,17 +46,9 @@ export class SearchScreen extends React.Component<Props, State> {
     }
 
     getRoutes() {
-        this.setState({
-            loading: true,
-        })
-        fetch(URLS.ROUTES, {
-            method: 'POST',
-            headers: HEADERS,
-            body: JSON.stringify(SEARCH_ROUTE),
-        }).then((response) => response.json())
-            .then((responseJson => {
+        API.getPublicTransitRoutes()
+            .then((publicTransportOptionsArray) => {
                 let travelTypes2DArray = Array<Array<string>>();
-                let publicTransportOptionsArray = responseJson.routes.publicTransport;
 
                 this.setState({
                     travelOptions: publicTransportOptionsArray,
@@ -74,10 +68,12 @@ export class SearchScreen extends React.Component<Props, State> {
                     travelTypes2DArray,
                     loading: false
                 })
-            }))
-            .catch((error) => {
+            }).catch((error) => {
                 console.log(error);
             });
+        this.setState({
+            loading: true,
+        })
     }
 
     onListItemPress(travelOption: Object, navigate: Function) {

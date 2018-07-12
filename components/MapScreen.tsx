@@ -65,7 +65,7 @@ export class MapScreen extends React.Component<Props, State> {
     }
 
     static navigationOptions = {
-        title: 'Starter',
+        title: 'Route',
     };
 
     render() {

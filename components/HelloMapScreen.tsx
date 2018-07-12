@@ -1,9 +1,12 @@
 import React from 'react';
 import { NavigationScreenProp } from 'react-navigation';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Button } from 'react-native';
 import MapView, { Marker, Polyline, LatLng } from 'react-native-maps'
+import { Icon, SearchBar } from 'react-native-elements'
 
 import { testStartLocation, testInitialRegion } from '../constants';
+import { MapScreen } from './MapScreen';
+import { SearchScreen } from './SearchScreen';
 
 
 export interface Props {
@@ -23,7 +26,7 @@ export class HelloMapScreen extends React.Component<Props, State> {
       title: 'Hello Map',
       headerRight: (
         <TouchableOpacity style={{ marginRight: 10 }} onPress={() => navigation.navigate('SearchScreen')} >
-          <Text style={{color: 'white'}}>Search Routes</Text>
+          <Icon name="search" color="white"/>
         </TouchableOpacity>
       ),
     }
@@ -32,8 +35,9 @@ export class HelloMapScreen extends React.Component<Props, State> {
   render() {
     return (
       <View style={{ flex: 1 }}>
+}
         <MapView
-          style={{ flex: 1 }}
+          style={{ flex: 1, zIndex: -1 }}
           initialRegion={testInitialRegion}>
           <Marker
             coordinate={testStartLocation}

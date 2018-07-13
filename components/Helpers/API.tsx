@@ -5,6 +5,7 @@ export const API = {
         address = "Fredrikinkatu 47",
         startLocation = testStartLocation,
         endLocation = testEndLocation) {
+            console.log(address);
         let result = await fetch(URLS.ROUTES, {
             method: 'POST',
             headers: HEADERS,
@@ -39,5 +40,12 @@ export const API = {
         .then((response) => response.json());
         return result.routes.publicTransport;
     },
+    async getDepartureLocations(text = "Linnanmaki", at = `${testStartLocation.latitude,testStartLocation.longitude}`) {
+        let result = await fetch(`${URLS.PLACES}?text=${text}$at=${at}`, {
+            method: 'GET',
+            headers: HEADERS,
+        })
+        .then((response) => response.json());
+        return result.search;
+    },
 }
-

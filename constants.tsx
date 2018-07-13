@@ -1,6 +1,6 @@
 export const testStartLocation = {
     latitude: 60.189862,
-    longitude: 24.93939,
+    longitude: 24.921628,
 };
 export const testEndLocation = {
     latitude: 60.162788,
@@ -42,6 +42,10 @@ export const SEARCH_ROUTE = {
     }
 }
 
+export const PLACES_ROUTE = {
+
+}
+
 export const HEADERS = {
     'Accept': 'application/json',
     'Content-Type': 'application/json',
@@ -49,5 +53,5 @@ export const HEADERS = {
 
 export const URLS = {
     ROUTES: "https://devapi.tuup.fi/routing/v1/routes",
-    PLACES: ""
+    PLACES: "https://devapi.tuup.fi/places/v2/search"
 }

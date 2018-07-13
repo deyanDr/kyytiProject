@@ -4,19 +4,32 @@ import { NavigationScreenProp } from 'react-navigation';
 import { Button, StyleSheet, Text, View, ActivityIndicator, FlatList, TouchableOpacity, Dimensions, Alert } from 'react-native';
 import { SearchBar, List, ListItem, Icon } from 'react-native-elements'
 
-import { testStartLocation, testInitialRegion } from '../constants';
+import { testStartLocation, testInitialRegion, testEndLocation } from '../constants';
 import { SEARCH_ROUTE, HEADERS, URLS } from '../constants';
 
 import { API } from './Helpers/API'
 
 export interface Props {
-    navigation: NavigationScreenProp<any, any>
+    navigation: NavigationScreenProp<any, any>,
+    startLocation: {
+        latitude: number,
+        longitude: number
+    }
 }
 
 interface State {
     loading: boolean;
     travelTypes2DArray: Array<Array<string>>;
     travelOptions: Array<Object>;
+    searchText: string;
+    startLocation: {
+        latitude: number,
+        longitude: number
+    };
+    endLocation: {
+        latitude: number,
+        longitude: number
+    };
 }
 
 export class SearchScreen extends React.Component<Props, State> {
@@ -27,10 +40,14 @@ export class SearchScreen extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
+        console.log(props.navigation.state);
         this.state = {
             loading: false,
             travelTypes2DArray: Array<Array<string>>(),
             travelOptions: Array<Object>(),
+            searchText: "Fredrinkatu 47, Helsinki",
+            startLocation: testStartLocation,
+            endLocation: testEndLocation
         }
     }
 
@@ -45,8 +62,23 @@ export class SearchScreen extends React.Component<Props, State> {
         )
     }
 
-    getRoutes() {
-        API.getPublicTransitRoutes()
+    getDepartureLocations() {
+        API.getDepartureLocations()
+        .then((departureLocations) => {
+            console.log(departureLocations);
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+    }
+
+    getRoutes(address: string, startLocation = testStartLocation, endLocation = testEndLocation) {
+        console.log(startLocation);
+        this.setState({
+            loading: true,
+        })
+
+        API.getPublicTransitRoutes("Kyyti Office - Test", address, startLocation, endLocation)
             .then((publicTransportOptionsArray) => {
                 let travelTypes2DArray = Array<Array<string>>();
 
@@ -71,9 +103,6 @@ export class SearchScreen extends React.Component<Props, State> {
             }).catch((error) => {
                 console.log(error);
             });
-        this.setState({
-            loading: true,
-        })
     }
 
     onListItemPress(travelOption: Object, navigate: Function) {
@@ -96,8 +125,9 @@ export class SearchScreen extends React.Component<Props, State> {
 
     renderHeader = () => {
         return <SearchBar containerStyle={[styles.searchBar, styles.screenWidth]}
-            value="Fredrinkatu 47, Helsinki"
-            onSubmitEditing={() => this.getRoutes()}
+            value={this.state.searchText}
+            onChangeText={(searchText) => this.setState({searchText})}
+            onSubmitEditing={() => this.getRoutes(this.state.searchText, this.state.startLocation, this.state.endLocation)}
             lightTheme
             placeholder='Search places' />;
     };

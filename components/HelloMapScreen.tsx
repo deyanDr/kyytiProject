@@ -14,34 +14,52 @@ export interface Props {
 }
 
 interface State {
+  startLocation: {
+    latitude: number,
+    longitude: number
+  };
 }
 
 export class HelloMapScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
+    this.state = {
+      startLocation: testStartLocation
+    }
+    props.navigation.setParams({ startLocation: testStartLocation })
   }
 
   static navigationOptions = ({ navigation }) => {
     return {
       title: 'Hello Map',
       headerRight: (
-        <TouchableOpacity style={{ marginRight: 10 }} onPress={() => navigation.navigate('SearchScreen')} >
-          <Icon name="search" color="white"/>
+        <TouchableOpacity
+          style={{ marginRight: 10 }}
+          onPress={() => navigation.navigate('SearchScreen')} >
+          <Icon name="search" color="white" />
         </TouchableOpacity>
       ),
     }
   };
 
+  onUserPinDragEnd(event) {
+    this.setState({ startLocation: event.nativeEvent.coordinate })
+    this.props.navigation.setParams({ startLocation: event.nativeEvent.coordinate })
+    console.log(this.props.navigation.state)
+  }
+
   render() {
     return (
       <View style={{ flex: 1 }}>
-}
         <MapView
           style={{ flex: 1, zIndex: -1 }}
           initialRegion={testInitialRegion}>
           <Marker
             coordinate={testStartLocation}
-            title="My Location" />
+            title="My Location"
+            draggable
+            onDragEnd={this.onUserPinDragEnd.bind(this)}
+          />
         </MapView>
       </View>
     );

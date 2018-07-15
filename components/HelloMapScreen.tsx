@@ -1,11 +1,10 @@
 import React from 'react';
 import { NavigationScreenProp } from 'react-navigation';
-import { View, Text, TouchableOpacity, Button } from 'react-native';
-import MapView, { Marker, Polyline, LatLng } from 'react-native-maps'
-import { Icon, SearchBar } from 'react-native-elements'
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import MapView, { Marker, LatLng } from 'react-native-maps'
+import { SearchBar } from 'react-native-elements'
 
 import { testStartLocation, testInitialRegion } from '../constants';
-import { MapScreen } from './MapScreen';
 import { SearchScreen } from './SearchScreen';
 
 
@@ -14,54 +13,88 @@ export interface Props {
 }
 
 interface State {
-  startLocation: {
-    latitude: number,
-    longitude: number
-  };
+  searchText: string;
+  startLocation: LatLng;
 }
 
 export class HelloMapScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      startLocation: testStartLocation
-    }
-    props.navigation.setParams({ startLocation: testStartLocation })
+      startLocation: testStartLocation,
+      searchText: 'Fredrinkatu 47, Helsinki',
+    };
+    this.navigateToSearch = this.navigateToSearch.bind(this);
   }
 
-  static navigationOptions = ({ navigation }) => {
+  componentDidMount() {
+    this.props.navigation.setParams({ navigateToSearch: this.navigateToSearch });
+  }
+
+  static navigationOptions = () => {
     return {
       title: 'Hello Map',
-      headerRight: (
-        <TouchableOpacity
-          style={{ marginRight: 10 }}
-          onPress={() => navigation.navigate('SearchScreen')} >
-          <Icon name="search" color="white" />
-        </TouchableOpacity>
-      ),
     }
   };
 
-  onUserPinDragEnd(event) {
-    this.setState({ startLocation: event.nativeEvent.coordinate })
-    this.props.navigation.setParams({ startLocation: event.nativeEvent.coordinate })
-    console.log(this.props.navigation.state)
+
+  navigateToSearch() {
+    this.props.navigation.navigate('SearchScreen', {
+      startLocation: this.state.startLocation || testStartLocation,
+      searchText: this.state.searchText
+    })
+  }
+
+  onUserPinDragEnd(event: any) {
+    this.setState({ startLocation: event.nativeEvent.coordinate });
   }
 
   render() {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <SearchBar
+          value={this.state.searchText}
+          onChangeText={(searchText) => this.setState({ searchText })}
+          onSubmitEditing={() => this.navigateToSearch()}
+          placeholder='Search places' />
         <MapView
-          style={{ flex: 1, zIndex: -1 }}
+          style={[styles.map]}
           initialRegion={testInitialRegion}>
           <Marker
             coordinate={testStartLocation}
-            title="My Location"
+            title='My Location'
             draggable
             onDragEnd={this.onUserPinDragEnd.bind(this)}
           />
         </MapView>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => { this.navigateToSearch() }}  >
+          <Text style={styles.buttonText}> Search Routes </Text>
+        </TouchableOpacity>
       </View>
     );
   }
 }
+
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white'
+  },
+  map: {
+    flex: 1,
+  },
+  button: {
+    alignItems: 'center',
+    backgroundColor: '#3B3e42',
+    padding: 20,
+
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold'
+  }
+})

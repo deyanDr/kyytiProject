@@ -5,6 +5,10 @@ import MapView, { Marker, Polyline, LatLng } from 'react-native-maps'
 import { testStartLocation, testEndLocation} from '../constants';
 
 interface State {
+    startLocation: {
+        latitude: number;
+        longitude: number;
+    }
     travelOption: any;
     coordinates2DArray: Array<Array<LatLng>>;
     colorsObjectArray: Array<string>;
@@ -13,13 +17,19 @@ interface State {
 
 interface Props {
     travelOption: any;
+    startLocation: {
+        latitude: number;
+        longitude: number;
+    }
 }
 
 export class MapScreen extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
+        console.log(props.navigation.state.params.startLocation);
         this.state = {
+            startLocation: props.navigation.state.params.startLocation,
             travelOption: props.navigation.state.params.travelOption,
             coordinates2DArray: Array<Array<LatLng>>(),
             colorsObjectArray: Array<string>(),
@@ -91,7 +101,7 @@ export class MapScreen extends React.Component<Props, State> {
                         />
                     })}
                     <Marker
-                        coordinate={testStartLocation}
+                        coordinate={this.state.startLocation || testStartLocation}
                         title="Departure" />
                     <Marker
                         pinColor="blue"

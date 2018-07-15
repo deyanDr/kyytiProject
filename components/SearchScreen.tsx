@@ -3,6 +3,8 @@ import React from 'react';
 import { NavigationScreenProp } from 'react-navigation';
 import { Button, StyleSheet, Text, View, ActivityIndicator, FlatList, TouchableOpacity, Dimensions, Alert } from 'react-native';
 import { SearchBar, List, ListItem, Icon } from 'react-native-elements'
+import MapView, { Marker, Polyline, LatLng } from 'react-native-maps'
+
 
 import { testStartLocation, testInitialRegion, testEndLocation } from '../constants';
 import { SEARCH_ROUTE, HEADERS, URLS } from '../constants';
@@ -11,10 +13,8 @@ import { API } from './Helpers/API'
 
 export interface Props {
     navigation: NavigationScreenProp<any, any>,
-    startLocation: {
-        latitude: number,
-        longitude: number
-    }
+    searchText: string,
+    startLocation: LatLng,
 }
 
 interface State {
@@ -22,14 +22,8 @@ interface State {
     travelTypes2DArray: Array<Array<string>>;
     travelOptions: Array<Object>;
     searchText: string;
-    startLocation: {
-        latitude: number,
-        longitude: number
-    };
-    endLocation: {
-        latitude: number,
-        longitude: number
-    };
+    startLocation: LatLng;
+    endLocation: LatLng;
 }
 
 export class SearchScreen extends React.Component<Props, State> {
@@ -40,36 +34,28 @@ export class SearchScreen extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
-        console.log(props.navigation.state);
         this.state = {
             loading: false,
             travelTypes2DArray: Array<Array<string>>(),
             travelOptions: Array<Object>(),
-            searchText: "Fredrinkatu 47, Helsinki",
-            startLocation: testStartLocation,
+            searchText: props.navigation.state.params.searchText,
+            startLocation: props.navigation.state.params.startLocation,
             endLocation: testEndLocation
         }
     }
 
     componentDidMount() {
-        Alert.alert(
-            'Info',
-            'List routes from user’s mocked location (60.189862, 24.921628) to Kyyti office at Fredrikinkatu 47, Helsinki.',
-            [
-                { text: 'OK', onPress: () => console.log('OK Pressed') },
-            ],
-            { cancelable: false }
-        )
+        this.getRoutes(this.state.searchText, this.state.startLocation, this.state.endLocation)
     }
 
     getDepartureLocations() {
         API.getDepartureLocations()
-        .then((departureLocations) => {
-            console.log(departureLocations);
-        })
-        .catch((error) => {
-            console.log(error);
-        })
+            .then((departureLocations) => {
+                console.log(departureLocations);
+            })
+            .catch((error) => {
+                console.log(error);
+            })
     }
 
     getRoutes(address: string, startLocation = testStartLocation, endLocation = testEndLocation) {
@@ -107,7 +93,8 @@ export class SearchScreen extends React.Component<Props, State> {
 
     onListItemPress(travelOption: Object, navigate: Function) {
         navigate('MapScreen', {
-            travelOption
+            travelOption,
+            startLocation: this.state.startLocation
         })
     }
 
@@ -126,7 +113,7 @@ export class SearchScreen extends React.Component<Props, State> {
     renderHeader = () => {
         return <SearchBar containerStyle={[styles.searchBar, styles.screenWidth]}
             value={this.state.searchText}
-            onChangeText={(searchText) => this.setState({searchText})}
+            onChangeText={(searchText) => this.setState({ searchText })}
             onSubmitEditing={() => this.getRoutes(this.state.searchText, this.state.startLocation, this.state.endLocation)}
             lightTheme
             placeholder='Search places' />;
@@ -135,16 +122,27 @@ export class SearchScreen extends React.Component<Props, State> {
     render() {
         return (
             <View style={[styles.container]}>
+                {/* <MapView
+                    style={[styles.map, styles.screenHeight, styles.screenWidth]}
+                    initialRegion={testInitialRegion}>
+                    <Marker
+                        coordinate={testStartLocation}
+                        title="My Location"
+                        draggable
+                    />
+                </MapView> */}
 
+                <View style={[styles.flatList]}>
                 {this.state.loading && <ActivityIndicator style={{ alignSelf: 'center', margin: 20 }} size="large" color="black" />}
 
-                <FlatList
-                    style={[styles.screenWidth, styles.screenHeight]}
-                    data={this.state.travelTypes2DArray}
-                    renderItem={({ item, index }) => this.renderListItem(item, this.state.travelOptions[index])}
-                    keyExtractor={(item, index) => `${index}`}
-                    ListHeaderComponent={this.renderHeader}
-                />
+                    <FlatList
+                        // style={[styles.screenWidth, styles.screenHeight]}
+                        data={this.state.travelTypes2DArray}
+                        renderItem={({ item, index }) => this.renderListItem(item, this.state.travelOptions[index])}
+                        keyExtractor={(item, index) => `${index}`}
+                        // ListHeaderComponent={this.renderHeader}
+                    />
+                </View>
             </View>
         );
     }
@@ -154,7 +152,9 @@ export class SearchScreen extends React.Component<Props, State> {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center'
+        justifyContent: 'center',
+        backgroundColor: 'white'
+        
     },
     horizontal: {
         flexDirection: 'row',
@@ -165,7 +165,8 @@ const styles = StyleSheet.create({
 
     },
     flatList: {
-        flex: 0.8,
+        flex: 1,
+        backgroundColor: 'white'
     },
     headline: {
         textAlign: 'center',
@@ -185,7 +186,19 @@ const styles = StyleSheet.create({
     screenWidth: {
         width: Dimensions.get('window').width,
     },
-    screenHeight: {
+    screenHeight: { 
         height: Dimensions.get('window').height
-    }
+    },
+    map: {
+        position: 'absolute',
+        zIndex: -10
+    },
+    headerImage: {
+        height: 150,
+        // width: deviceWidth
+    },
+    subHeaderImage: {
+        backgroundColor: 'rgba(128, 128, 128, 0.9)',
+        zIndex: 5
+    },
 });

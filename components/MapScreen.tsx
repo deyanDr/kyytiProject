@@ -2,7 +2,8 @@ import React from 'react';
 import { View, Alert } from 'react-native';
 import MapView, { Marker, Polyline, LatLng } from 'react-native-maps'
 
-import { testStartLocation, testEndLocation} from '../constants';
+import { testStartLocation, testEndLocation } from '../constants';
+import { Icon } from 'react-native-elements';
 
 interface State {
     startLocation: {
@@ -85,8 +86,8 @@ export class MapScreen extends React.Component<Props, State> {
                     onMapReady={() => this.updateRoute(this.state.travelOption)}
                     style={{ flex: 1 }}
                     initialRegion={{
-                        latitude: 60.189862,
-                        longitude: 24.921628,
+                        latitude: this.state.startLocation.latitude,
+                        longitude: this.state.startLocation.longitude,
                         latitudeDelta: 0.0922,
                         longitudeDelta: 0.0421
                     }}>
@@ -102,11 +103,14 @@ export class MapScreen extends React.Component<Props, State> {
                     })}
                     <Marker
                         coordinate={this.state.startLocation || testStartLocation}
-                        title="Departure" />
+                        title="Departure">
+                        <Icon name="map-pin" type="font-awesome" color='red' />
+                    </Marker>
                     <Marker
-                        pinColor="blue"
                         coordinate={testEndLocation}
-                        title="Finish" />
+                        title="Finish">
+                        <Icon name="map-pin" type="font-awesome" color='blue' />
+                    </Marker>
                 </MapView>
             </View>
         );

@@ -26,11 +26,7 @@ export class HelloMapScreen extends React.Component<Props, State> {
   }
 
   searchButtonPressed() {
-    this.setState({ showSearchScreen: !this.state.showSearchScreen })
-  }
-
-  showSearchScreen() {
-    this.setState({ showSearchScreen: true });
+    this.setState({ showSearchScreen: !this.state.showSearchScreen });
   }
 
   onUserPinDragEnd(event: any) {
@@ -44,7 +40,7 @@ export class HelloMapScreen extends React.Component<Props, State> {
           <SearchBar
             value={this.state.searchText}
             onChangeText={(searchText) => this.setState({ searchText })}
-            onSubmitEditing={() => this.showSearchScreen()}
+            onSubmitEditing={() => this.setState({ showSearchScreen: true })}
             placeholder='Search destination ...' />}
 
         {this.state.showSearchScreen &&
@@ -58,7 +54,7 @@ export class HelloMapScreen extends React.Component<Props, State> {
             initialRegion={testInitialRegion}>
             <Marker
               coordinate={this.state.startLocation}
-              title='My Location'
+              title='Drag to change departure position'
               draggable
               onDragEnd={this.onUserPinDragEnd.bind(this)}
             >

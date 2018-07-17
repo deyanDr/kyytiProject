@@ -44,7 +44,7 @@ export class SearchResultsScreen extends React.Component<Props, State> {
     }
 
     componentDidMount() {
-        this.getRoutes(this.state.searchText, this.state.startLocation, this.state.endLocation)
+        this.getRoutes(this.state.searchText, this.state.startLocation, this.state.endLocation);
     }
 
     getDepartureLocations() {
@@ -58,17 +58,11 @@ export class SearchResultsScreen extends React.Component<Props, State> {
     }
 
     getRoutes(address: string, startLocation = testStartLocation, endLocation = testEndLocation) {
-        this.setState({
-            loading: true,
-        })
+        this.setState({ loading: true });
 
         API.getPublicTransitRoutes("Kyyti Office - Test", address, startLocation, endLocation)
             .then((publicTransportOptionsArray) => {
                 let travelTypes2DArray = Array<Array<ITravelObject>>();
-
-                this.setState({
-                    travelOptions: publicTransportOptionsArray,
-                })
 
                 publicTransportOptionsArray.forEach((publicTransportOption: any) => {
                     let travelTypesArray = Array<ITravelObject>();
@@ -81,14 +75,13 @@ export class SearchResultsScreen extends React.Component<Props, State> {
                             distance: leg.distance,
                             duration: leg.duration,
                             color: leg.color,
-                        }
-
+                        };
                         travelTypesArray.push(travelObject);
-                    })
-
+                    });
                     travelTypes2DArray.push(travelTypesArray);
-                })
+                });
                 this.setState({
+                    travelOptions: publicTransportOptionsArray,
                     travelTypes2DArray,
                     loading: false
                 })
@@ -98,7 +91,7 @@ export class SearchResultsScreen extends React.Component<Props, State> {
     }
 
     onListItemPress(travelOption: ITravelOption) {
-        this.setState({ mapModalVisible: true, travelOption: travelOption })
+        this.setState({ mapModalVisible: true, travelOption: travelOption });
     }
 
     getTransportIcon(type: string) {
@@ -106,9 +99,9 @@ export class SearchResultsScreen extends React.Component<Props, State> {
             case 'walk':
                 return "directions-walk";
             case 'tram':
-                return "tram"
+                return "tram";
             case 'bus':
-                return "directions-bus"
+                return "directions-bus";
             default:
                 return "";
         }
@@ -121,7 +114,7 @@ export class SearchResultsScreen extends React.Component<Props, State> {
     renderListItem(travelTypesArray: Array<ITravelObject>, travelOption: ITravelOption) {
         var timeDiff = Math.abs(new Date(travelOption.departureTime.time).getTime() - new Date().getTime());
         var diffMins = Math.round(((timeDiff % 86400000) % 3600000) / 60000);
-        let travelPrice = travelOption.totalPrice ? travelOption.totalPrice.formattedPrice : 'n/a'
+        let travelPrice = travelOption.totalPrice ? travelOption.totalPrice.formattedPrice : 'n/a';
 
         return (
             <TouchableOpacity
@@ -194,7 +187,7 @@ export class SearchResultsScreen extends React.Component<Props, State> {
                     isVisible={this.state.mapModalVisible} style={styles.bottomModal}
                 >
                     {this.renderModalContent(this.state.travelOption, this.state.startLocation)}
-                </Modal>
+                                </Modal>
             </View>
         );
     }

@@ -51,7 +51,7 @@ export class MapScreen extends React.Component<Props, State> {
                 let coordinate = {
                     latitude: coord[0],
                     longitude: coord[1]
-                }
+                };
                 coordinates.push(coordinate);
             });
             // Get iconRefs
@@ -70,7 +70,7 @@ export class MapScreen extends React.Component<Props, State> {
         Alert.alert(
             'Transport type is: ',
             travelType,
-            [ ],
+            [],
             { cancelable: false }
         )
     }
@@ -111,7 +111,7 @@ export class MapScreen extends React.Component<Props, State> {
                         title="Finish">
                         <Icon name="map-pin" type="font-awesome" color='blue' />
                     </Marker>
-                </MapView>
+                </MapView> 
             </View>
         );
     }
@@ -119,7 +119,7 @@ export class MapScreen extends React.Component<Props, State> {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 0.7,
+        flex: 0.5,
         justifyContent: 'flex-end',
         margin: 0,
     },

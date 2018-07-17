@@ -1,3 +1,10 @@
+Notes:
+
+- Better use yarn instead of npm to run project
+- master branch implements typical app navigation, but it is unfinished and not very pretty
+- no-navigation branch is more of a final representation of what I had in mind, but when you run it, you can notice that the modal is a bit choppy
+------------------------------
+
 This project was bootstrapped with [Create React Native App](https://github.com/react-community/create-react-native-app).
 
 Below you'll find information about performing common tasks. The most recent version of this guide is available [here](https://github.com/react-community/create-react-native-app/blob/master/react-native-scripts/template/README.md).

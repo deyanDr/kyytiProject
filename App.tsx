@@ -1,20 +1,16 @@
 import React from 'react';
 import { createStackNavigator } from 'react-navigation';
-import { StyleSheet, Text, View, StatusBar } from 'react-native';
+import { StyleSheet, StatusBar } from 'react-native';
 
-import { MapScreen } from './components/MapScreen';
-import { SearchScreen } from './components/SearchScreen';
 import { HelloMapScreen } from './components/HelloMapScreen';
-
 
 const App = createStackNavigator({
   HelloMapScreen: { screen: HelloMapScreen},
-  SearchScreen: { screen: SearchScreen },
-  MapScreen: { screen: MapScreen },
 },
 {
   initialRouteName: 'HelloMapScreen',
   navigationOptions: {
+    title: 'Kyyti',
     headerTintColor: 'white',
     headerTitleStyle: {
       color: 'white'

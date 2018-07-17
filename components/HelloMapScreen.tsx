@@ -1,21 +1,16 @@
 import React from 'react';
-import { NavigationScreenProp } from 'react-navigation';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import MapView, { Marker, LatLng } from 'react-native-maps'
 import { SearchBar, Icon } from 'react-native-elements'
 import Modal from "react-native-modal";
 
 import { testStartLocation, testInitialRegion } from '../constants';
-import { SearchScreen } from './SearchScreen';
+import { SearchResultsScreen } from './SearchResultsScreen';
 
-
-export interface Props {
-  navigation: NavigationScreenProp<any, any>
-}
+interface Props {}
 
 interface State {
   showSearchScreen: boolean,
-  searchTitle: string,
   searchText: string;
   startLocation: LatLng;
 }
@@ -25,17 +20,10 @@ export class HelloMapScreen extends React.Component<Props, State> {
     super(props);
     this.state = {
       showSearchScreen: false,
-      searchTitle: 'Search Routes',
       startLocation: testStartLocation,
       searchText: 'Fredrinkatu 47, Helsinki',
     };
   }
-
-  static navigationOptions = () => {
-    return {
-      title: 'Hello Map',
-    }
-  };
 
   searchButtonPressed() {
     this.setState({ showSearchScreen: !this.state.showSearchScreen })
@@ -60,7 +48,7 @@ export class HelloMapScreen extends React.Component<Props, State> {
             placeholder='Search destination ...' />}
 
         {this.state.showSearchScreen &&
-          <SearchScreen
+          <SearchResultsScreen
             startLocation={this.state.startLocation || testStartLocation}
             searchText={this.state.searchText} />}
 
@@ -89,7 +77,6 @@ export class HelloMapScreen extends React.Component<Props, State> {
     );
   }
 }
-
 
 const styles = StyleSheet.create({
   container: {

@@ -1,15 +1,12 @@
-// components/Hello.tsx
 import React from 'react';
-import { NavigationScreenProp } from 'react-navigation';
-import { Button, StyleSheet, Text, View, ActivityIndicator, FlatList, TouchableOpacity, Dimensions, Alert } from 'react-native';
+import { StyleSheet, Text, View, ActivityIndicator, FlatList, TouchableOpacity } from 'react-native';
 import Modal from "react-native-modal";
-import { SearchBar, List, ListItem, Icon, PricingCard } from 'react-native-elements'
-import MapView, { Marker, Polyline, LatLng } from 'react-native-maps'
+import { Icon } from 'react-native-elements'
+import { LatLng } from 'react-native-maps'
 
 import { MapScreen } from './MapScreen';
 
-import { testStartLocation, testInitialRegion, testEndLocation } from '../constants';
-import { SEARCH_ROUTE, HEADERS, URLS } from '../constants';
+import { testStartLocation, testEndLocation } from '../constants';
 
 import { API } from './Helpers/API'
 import { ITravelObject, ITravelOption } from './Helpers/Types';
@@ -30,11 +27,7 @@ interface State {
     travelOption: ITravelOption;
 }
 
-export class SearchScreen extends React.Component<Props, State> {
-
-    static navigationOptions = {
-        title: 'Search Results',
-    };
+export class SearchResultsScreen extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
@@ -188,6 +181,7 @@ export class SearchScreen extends React.Component<Props, State> {
 
                 <View style={styles.flatList}>
                     <FlatList
+                        // NOTE: No idea how to fix ITem type error, any help is appreciated...
                         data={this.state.travelTypes2DArray}
                         renderItem={({ item, index }) => this.renderListItem(item, this.state.travelOptions[index])}
                         keyExtractor={(item, index) => `${index}`}
@@ -197,7 +191,7 @@ export class SearchScreen extends React.Component<Props, State> {
                     backdropOpacity={0.3}
                     hideModalContentWhileAnimating={true}
                     onBackdropPress={() => { this.setState({ mapModalVisible: false }) }}
-                    isVisible={this.state.mapModalVisible} style={[styles.bottomModal]}
+                    isVisible={this.state.mapModalVisible} style={styles.bottomModal}
                 >
                     {this.renderModalContent(this.state.travelOption, this.state.startLocation)}
                 </Modal>
@@ -206,7 +200,6 @@ export class SearchScreen extends React.Component<Props, State> {
     }
 }
 
-// styles
 const styles = StyleSheet.create({
     container: {
         flex: 1,

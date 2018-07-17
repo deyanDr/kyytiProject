@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Alert, Button } from 'react-native';
+import { View, Alert, StyleSheet } from 'react-native';
 import MapView, { Marker, Polyline, LatLng } from 'react-native-maps';
 
 import { testStartLocation, testEndLocation } from '../constants';
@@ -68,11 +68,9 @@ export class MapScreen extends React.Component<Props, State> {
 
     onPolyPress(travelType: string) {
         Alert.alert(
-            'Get the',
+            'Transport type is: ',
             travelType,
-            [
-                { text: 'OK', onPress: () => console.log('OK Pressed') },
-            ],
+            [ ],
             { cancelable: false }
         )
     }
@@ -83,19 +81,10 @@ export class MapScreen extends React.Component<Props, State> {
 
     render() {
         return (
-            <View style={{
-                flex: 0.7,
-                justifyContent: 'flex-end',
-
-                margin: 0,
-            }}>
+            <View style={styles.container}>
                 <MapView
                     onMapReady={() => this.updateRoute(this.state.travelOption)}
-                    style={{
-                        flex: 1,
-                        borderTopColor: 'white',
-                        borderTopWidth: 2,
-                    }}
+                    style={styles.map}
                     initialRegion={{
                         latitude: this.state.startLocation.latitude,
                         longitude: this.state.startLocation.longitude,
@@ -127,3 +116,14 @@ export class MapScreen extends React.Component<Props, State> {
         );
     }
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 0.7,
+        justifyContent: 'flex-end',
+        margin: 0,
+    },
+    map: {
+        flex: 1
+    },
+});

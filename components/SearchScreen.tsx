@@ -2,9 +2,11 @@
 import React from 'react';
 import { NavigationScreenProp } from 'react-navigation';
 import { Button, StyleSheet, Text, View, ActivityIndicator, FlatList, TouchableOpacity, Dimensions, Alert } from 'react-native';
+import Modal from "react-native-modal";
 import { SearchBar, List, ListItem, Icon, PricingCard } from 'react-native-elements'
 import MapView, { Marker, Polyline, LatLng } from 'react-native-maps'
 
+import { MapScreen } from './MapScreen';
 
 import { testStartLocation, testInitialRegion, testEndLocation } from '../constants';
 import { SEARCH_ROUTE, HEADERS, URLS } from '../constants';
@@ -12,7 +14,7 @@ import { SEARCH_ROUTE, HEADERS, URLS } from '../constants';
 import { API } from './Helpers/API'
 
 export interface Props {
-    navigation: NavigationScreenProp<any, any>,
+    // navigation: NavigationScreenProp<any, any>,
     searchText: string,
     startLocation: LatLng,
 }
@@ -24,6 +26,8 @@ interface State {
     searchText: string;
     startLocation: LatLng;
     endLocation: LatLng;
+    mapModalVisible: boolean;
+    travelOption: Object;
 }
 
 interface TravelObject {
@@ -49,9 +53,11 @@ export class SearchScreen extends React.Component<Props, State> {
             loading: false,
             travelTypes2DArray: Array<Array<TravelObject>>(),
             travelOptions: Array<Object>(),
-            searchText: props.navigation.state.params.searchText,
-            startLocation: props.navigation.state.params.startLocation,
-            endLocation: testEndLocation
+            travelOption: Object,
+            searchText: props.searchText,
+            startLocation: props.startLocation,
+            endLocation: testEndLocation,
+            mapModalVisible: false,
         }
     }
 
@@ -111,11 +117,12 @@ export class SearchScreen extends React.Component<Props, State> {
             });
     }
 
-    onListItemPress(travelOption: Object, navigate: Function) {
-        navigate('MapScreen', {
-            travelOption,
-            startLocation: this.state.startLocation
-        })
+    onListItemPress(travelOption: Object) {
+        this.setState({mapModalVisible: true, travelOption: travelOption})
+        // navigate('MapScreen', {
+        //     travelOption,
+        //     startLocation: this.state.startLocation
+        // })
     }
 
     getTransportIcon(type: string) {
@@ -130,6 +137,10 @@ export class SearchScreen extends React.Component<Props, State> {
                 return "";
         }
     }
+
+    renderModalContent = (travelOption: Object, startLocation: LatLng) => (
+        <MapScreen travelOption={travelOption} startLocation={startLocation} />
+    );
 
     renderListItem(travelTypesArray: Array<TravelObject>, travelOption: Object) {
         console.log(travelTypesArray)
@@ -147,7 +158,7 @@ export class SearchScreen extends React.Component<Props, State> {
                     flexDirection: 'row',
                     justifyContent: 'space-between'
                 }}
-                onPress={() => this.onListItemPress(travelOption, this.props.navigation.navigate)}>
+                onPress={() => this.onListItemPress(travelOption)}>
                 <View style={{ flex: 0.8, flexDirection: "column" }}>
 
                     <View style={{ flex: 0.4, flexDirection: "row", alignItems: 'center', marginBottom: 10, marginTop: 10 }}>
@@ -210,6 +221,12 @@ export class SearchScreen extends React.Component<Props, State> {
                         keyExtractor={(item, index) => `${index}`}
                     />
                 </View>
+                <Modal 
+                animationInTiming={100}
+                onBackdropPress={() => {this.setState({mapModalVisible: false})}} 
+                isVisible={this.state.mapModalVisible} style={[styles.bottomModal]}>
+                    {this.renderModalContent(this.state.travelOption, this.state.startLocation)}
+                </Modal>
             </View>
         );
     }
@@ -274,5 +291,9 @@ const styles = StyleSheet.create({
     priceText: {
         color: 'white',
         fontWeight: 'bold'
-    }
+    },
+    bottomModal: {
+        justifyContent: 'flex-end',
+        margin: 0,
+      },
 });

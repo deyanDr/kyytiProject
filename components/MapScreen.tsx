@@ -28,10 +28,9 @@ export class MapScreen extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
-        console.log(props.navigation.state.params.startLocation);
         this.state = {
-            startLocation: props.navigation.state.params.startLocation,
-            travelOption: props.navigation.state.params.travelOption,
+            startLocation: props.startLocation,
+            travelOption: props.travelOption,
             coordinates2DArray: Array<Array<LatLng>>(),
             colorsObjectArray: Array<string>(),
             travelTypeArray: Array<string>(),
@@ -81,15 +80,19 @@ export class MapScreen extends React.Component<Props, State> {
 
     render() {
         return (
-            <View style={{ flex: 1 }}>
+            <View style={{
+                flex: 0.7,
+                justifyContent: 'flex-end',
+                margin: 0,
+              }}>
                 <MapView
                     onMapReady={() => this.updateRoute(this.state.travelOption)}
                     style={{ flex: 1 }}
                     initialRegion={{
                         latitude: this.state.startLocation.latitude,
                         longitude: this.state.startLocation.longitude,
-                        latitudeDelta: 0.0922,
-                        longitudeDelta: 0.0421
+                        latitudeDelta: 0.1,
+                        longitudeDelta: 0.1
                     }}>
                     {this.state.coordinates2DArray.map((coordinates, index) => {
                         return <Polyline

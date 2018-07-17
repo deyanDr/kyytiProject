@@ -38,7 +38,7 @@ export class HelloMapScreen extends React.Component<Props, State> {
   };
 
   searchButtonPressed() {
-    this.setState({showSearchScreen: !this.state.showSearchScreen})
+    this.setState({ showSearchScreen: !this.state.showSearchScreen })
   }
 
   showSearchScreen() {
@@ -52,21 +52,21 @@ export class HelloMapScreen extends React.Component<Props, State> {
   render() {
     return (
       <View style={styles.container}>
-        {!this.state.showSearchScreen && <SearchBar
-          value={this.state.searchText}
-          onChangeText={(searchText) => this.setState({ searchText })}
-          onSubmitEditing={() => this.showSearchScreen()}
-          placeholder='Search destination ...' />}
+        {!this.state.showSearchScreen &&
+          <SearchBar
+            value={this.state.searchText}
+            onChangeText={(searchText) => this.setState({ searchText })}
+            onSubmitEditing={() => this.showSearchScreen()}
+            placeholder='Search destination ...' />}
 
         {this.state.showSearchScreen &&
           <SearchScreen
-            startLocation={
-              this.state.startLocation || testStartLocation}
+            startLocation={this.state.startLocation || testStartLocation}
             searchText={this.state.searchText} />}
 
         {!this.state.showSearchScreen &&
           <MapView
-            style={[styles.map]}
+            style={styles.map}
             initialRegion={testInitialRegion}>
             <Marker
               coordinate={this.state.startLocation}
@@ -76,11 +76,14 @@ export class HelloMapScreen extends React.Component<Props, State> {
             >
               <Icon name="map-pin" type="font-awesome" color='red' />
             </Marker>
-          </MapView>}}
+          </MapView>}
+        }
         <TouchableOpacity
           style={styles.button}
-          onPress={() => { this.searchButtonPressed() }}  >
-          <Text style={styles.buttonText}> {this.state.showSearchScreen ? 'Search Again' : 'Search Routes'} </Text>
+          onPress={() => { this.searchButtonPressed() }} >
+          <Text style={styles.buttonText}>
+            {this.state.showSearchScreen ? 'Search Again' : 'Search Routes'}
+          </Text>
         </TouchableOpacity>
       </View>
     );

@@ -5,7 +5,6 @@ export const API = {
         address = "Fredrikinkatu 47",
         startLocation = testStartLocation,
         endLocation = testEndLocation) {
-            console.log(address);
         let result = await fetch(URLS.ROUTES, {
             method: 'POST',
             headers: HEADERS,
